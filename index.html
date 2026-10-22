@@ -12,18 +12,18 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center p-3 sm:p-6">
+<body class="bg-slate-950 text-slate-100 min-h-screen p-3 sm:p-6">
 
     <!-- App Container -->
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-        
+    <div class="mx-auto w-full max-w-6xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+
         <!-- Header -->
-        <div class="bg-slate-950 p-4 border-b border-slate-800 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
+        <div class="bg-slate-950 px-4 sm:px-6 py-4 border-b border-slate-800 flex justify-between items-center gap-3">
+            <div class="flex items-center space-x-2 min-w-0">
                 <span class="text-xl">🎰</span>
-                <h1 class="font-bold text-base sm:text-lg text-emerald-400 tracking-wide">Pro Roulette Analyzer</h1>
+                <h1 class="font-bold text-base sm:text-lg text-emerald-400 tracking-wide truncate">Pro Roulette Analyzer</h1>
             </div>
-            <button id="reset-btn" class="bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow">
+            <button id="reset-btn" class="shrink-0 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300">
                 Reset All
             </button>
         </div>
@@ -34,72 +34,74 @@
         </div>
 
         <!-- Main Body Content -->
-        <div class="p-4 space-y-4 flex-1 overflow-y-auto">
+        <main class="p-4 sm:p-6">
+            <div class="grid gap-4 lg:grid-cols-3 lg:items-start">
 
-            <!-- Section 1: Paste Input -->
-            <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800/80">
-                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Paste Numbers (Comma Separated)</label>
-                <div class="flex gap-2">
-                    <textarea id="spins-input" rows="2" placeholder="e.g. 31, 14, 5, 0, 31, 22..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 resize-none"></textarea>
-                    <button id="load-btn" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs px-4 rounded-lg transition flex items-center justify-center shadow">Load</button>
+                <!-- Left column: number grid, then paste bar underneath -->
+                <div class="space-y-4 lg:col-span-2">
+                    <section>
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Tap Number to Add Live Spin</label>
+                            <span class="text-[10px] font-medium text-slate-500">37 NUMBERS</span>
+                        </div>
+                        <div id="roulette-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2 bg-slate-950/40 p-2.5 sm:p-3 rounded-xl border border-slate-800/80">
+                            <!-- Grid buttons dynamically injected -->
+                        </div>
+                    </section>
+
+                    <section class="bg-slate-950/50 p-3 sm:p-4 rounded-xl border border-slate-800/80">
+                        <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-2">
+                            <label for="spins-input" class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Paste / Load Past Spins</label>
+                            <span class="text-[10px] text-slate-500">Comma separated · replaces the current list</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <textarea id="spins-input" rows="2" placeholder="e.g. 31, 14, 5, 0, 31, 22..." class="w-full min-h-[52px] bg-slate-900 border border-slate-700 rounded-lg p-2.5 font-mono text-sm text-slate-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 resize-y"></textarea>
+                            <button id="load-btn" class="shrink-0 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs px-5 rounded-lg transition flex items-center justify-center shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300">Load</button>
+                        </div>
+                    </section>
                 </div>
+
+                <!-- Right column: fast-reading session summary and picks -->
+                <aside class="space-y-4 lg:sticky lg:top-6">
+                    <section class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-slate-800">Session Summary</div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800/80 flex flex-col justify-between text-center">
+                                <span class="text-[10px] text-slate-400 font-medium uppercase">Spins</span>
+                                <span id="res-total" class="text-lg font-extrabold text-white mt-1">0</span>
+                            </div>
+                            <div class="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800/80 flex flex-col justify-between text-center">
+                                <span class="text-[10px] text-slate-400 font-medium uppercase">Hot</span>
+                                <span id="res-hot" class="text-xs font-bold text-emerald-400 mt-1 truncate">-</span>
+                            </div>
+                            <div class="bg-slate-900/70 p-2.5 rounded-lg border border-slate-800/80 flex flex-col justify-between text-center">
+                                <span class="text-[10px] text-slate-400 font-medium uppercase">Cold</span>
+                                <span id="res-cold" class="text-xs font-bold text-rose-400 mt-1 truncate">-</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
+                        <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-slate-800">Top High-Chance Recommendations</div>
+                        <div id="res-top-stats" class="space-y-2 text-sm">
+                            <div class="text-slate-500 italic text-center py-1">Waiting for data...</div>
+                        </div>
+                    </section>
+
+                    <section class="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-4 text-center shadow-lg">
+                        <div class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Top Smart Pick</div>
+                        <div id="res-rec" class="text-lg font-extrabold text-white mt-1">Waiting for data...</div>
+                    </section>
+                </aside>
             </div>
 
-            <!-- Section 2: Quick Mobile Tapping Grid (0-36) -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Tap Number to Add Live Spin:</label>
-                <div id="roulette-grid" class="grid grid-cols-7 gap-1.5 bg-slate-950/40 p-2.5 rounded-xl border border-slate-800/80">
-                    <!-- Grid buttons dynamically injected -->
-                </div>
-            </div>
-
-            <!-- Section 3: Statistics Dashboard -->
-            <div class="grid grid-cols-3 gap-2">
-                <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex flex-col justify-between text-center">
-                    <span class="text-[10px] text-slate-400 font-medium uppercase">Spins</span>
-                    <span id="res-total" class="text-base font-extrabold text-white mt-1">0</span>
-                </div>
-                <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex flex-col justify-between text-center">
-                    <span class="text-[10px] text-slate-400 font-medium uppercase">Hot</span>
-                    <span id="res-hot" class="text-xs font-bold text-emerald-400 mt-1 truncate">-</span>
-                </div>
-                <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 flex flex-col justify-between text-center">
-                    <span class="text-[10px] text-slate-400 font-medium uppercase">Cold</span>
-                    <span id="res-cold" class="text-xs font-bold text-rose-400 mt-1 truncate">-</span>
-                </div>
-            </div>
-
-            <!-- Section 4: Outside Bets & Percentages Breakdown -->
-            <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
-                <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-slate-800">
-                    Outside Bets & Percentages
-                </div>
-                <div id="res-all-stats" class="space-y-1.5 text-xs text-slate-300">
-                    <div class="text-slate-500 italic text-center py-1">Load or tap numbers to view breakdown.</div>
-                </div>
-            </div>
-
-            <!-- Section 5: Top High-Chance Bets -->
-            <div class="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
-                <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2.5 pb-1 border-b border-slate-800">
-                    Top High-Chance Recommendations
-                </div>
-                <div id="res-top-stats" class="space-y-2 text-xs">
-                    <div class="text-slate-500 italic text-center py-1">Waiting for data...</div>
-                </div>
-            </div>
-
-            <!-- Section 6: Smart Top Recommendation Banner -->
-            <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-3.5 text-center shadow-lg">
-                <div class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Top Smart Pick</div>
-                <div id="res-rec" class="text-sm sm:text-base font-extrabold text-white mt-1">Waiting for data...</div>
-            </div>
-
-        </div>
+            <!-- Calculation-only breakdown. Kept out of the visible UI, still updated by runAnalysis(). -->
+            <div id="res-all-stats" class="hidden" aria-hidden="true"></div>
+        </main>
 
         <!-- Footer -->
-        <div class="bg-slate-950 p-2.5 text-center text-[11px] text-slate-500 border-t border-slate-800">
-            Strict LocalStorage Persistence Active (Data Never Lost on Reload)
+        <div class="bg-slate-950 px-4 py-3 text-center text-[11px] text-slate-500 border-t border-slate-800">
+            Saved locally in this browser. Past spins do not predict future results.
         </div>
 
     </div>
@@ -140,7 +142,7 @@
             for(let i=0; i<=36; i++) {
                 const btn = document.createElement('button');
                 btn.textContent = i;
-                btn.className = "py-2.5 rounded-lg font-bold text-xs text-white shadow transition active:scale-95 flex items-center justify-center";
+                btn.className = "py-2.5 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm text-white shadow transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 active:scale-95 flex items-center justify-center";
                 btn.style.backgroundColor = getBtnColor(i);
                 if(i !== 0 && !redNumbers.includes(i)) {
                     btn.style.border = "1px solid #475569";
